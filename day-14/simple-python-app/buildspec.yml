@@ -1,31 +1,26 @@
 version: 0.2
 
-env:
-  parameter-store:
-    DOCKER_REGISTRY_USERNAME: /myapp/docker-credentials/username
-    DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentials/password
-    DOCKER_REGISTRY_URL: /myapp/docker-registry/url
 phases:
   install:
     runtime-versions:
       python: 3.11
   pre_build:
     commands:
-      - echo "Installing dependencies..."
-      - pip install -r day-13/simple-python-app/requirements.txt
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 947557066309.dkr.ecr.ap-south-1.amazonaws.com
   build:
     commands:
-      - echo "Running tests..."
-      - cd day-13/simple-python-app/
-      - echo "Building Docker image..."
-      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
-      - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest" .
-      - docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest"
+      - echo Building the Docker image...
+      - docker build -t python01 .
+      - docker tag python01:latest 947557066309.dkr.ecr.ap-south-1.amazonaws.com/python01:latest
   post_build:
     commands:
-      - echo "Build completed successfully!"
+      - echo Pushing the Docker image to ECR...
+      - docker push 947557066309.dkr.ecr.ap-south-1.amazonaws.com/python01:latest
+      - echo Build and push completed successfully.
+
 artifacts:
   files:
     - '**/*'
-  base-directory: ../simple-python-app
-
+  base-directory: day-14/simple-python-app 
