@@ -12,6 +12,7 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
+      - cd day-14/simple-python-app
       - docker build -t python01 .
       - docker tag python01:latest 947557066309.dkr.ecr.ap-south-1.amazonaws.com/python01:latest
   post_build:
