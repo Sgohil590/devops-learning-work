@@ -5,4 +5,4 @@ set -e
 echo
 
 # Run the Docker image as a container
-echo
+echo.
