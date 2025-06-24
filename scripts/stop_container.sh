@@ -1,5 +1,3 @@
 #!/bin/bash
-set -e
-
-# Stop the running container (if any)
-echo "Hi"
+echo "Stopping container..."
+docker stop simple-python-app || true
